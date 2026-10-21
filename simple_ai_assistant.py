@@ -9,6 +9,8 @@ client = OpenAI(
     api_key = os.getenv("API_KEY")
 )
 
+message = []
+
 while True:
     input_text = input("\nYou: ")
 
@@ -16,16 +18,14 @@ while True:
         print("Exiting the chat. Goodbye!")
         break
 
+    message.append({"role": "user", "content":input_text})
     response = client.chat.completions.create(
         model=os.getenv("MODEL"),
-        messages=[
-            {
-                "role": "user",
-                "content":input_text
-            }
-        ],
+        messages=message,
         max_completion_tokens=20
     )
+
+    message.append({"role":"assistant","content":response.choices[0].message.content})
 
     print("\nLLM Response:")
     print(response.choices[0].message.content)
